@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<addonManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="http://schemas.apprenda.com/AddonManifest"
+               name="Google Cloud Addon"
+               description="Manages buckets in Google Cloud storage"
+               deploymentNotes="Configured to work in Apprenda 6.0"
+               developerHelp=""
+               vendor="Apprenda"
+               author="Jazmine Olinger"
+               version="1.0.0"
+               provisioningUsername=""
+               provisioningPassword=""
+               provisioningLocation=""
+               manifestVersion="2">
+  <properties>
+    <property key="projectID" displayName="project ID" description="Required - please supply the google cloud project ID" value=""/>
+    <property key="email" displayName="User email" description="Required - please supply an email address that is authorized on the Google cloud account" value=""/>
+    <property key="GoogleClientKey" displayName="Google Client Key" description="Required - please supply the client key" value=""/>
+    <property key="GoogleSecretKey" displayName="Google Secret Key" description="Required - please supply the secret key" value=""/>
+    <property key="BucketName" displayName="Bucket Name" description="Default name of the bucket. Should be overridden during provisioning." value="" />
+  </properties>
+  <parameters allowUserDefinedParameters="true" />
+</addonManifest>
