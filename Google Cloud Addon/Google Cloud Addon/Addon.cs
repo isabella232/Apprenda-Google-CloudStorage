@@ -18,18 +18,28 @@ using Google.Apis.Util.Store;
 
 namespace Apprenda.SaaSGrid.Addons.Google_Cloud_Addon
 {
-    public class Google_Cloud_Addon : AddonBase
+    public class BucketOperations
     {
-        public override OperationResult Deprovision(AddonDeprovisionRequest request)
+        public string message, projectID, email, bucketName, clientID, clientSecret;
+        public BucketOperations(string _projectID, string _email, string _clientID, string _clientSecret)
         {
-            throw new NotImplementedException();
+            projectID = _projectID;
+            email = _email;
+            clientID = _clientID;
+            clientSecret = _clientSecret;
+            message = "";
         }
-
-        private async Task Run(string projectName, string email, string newbucketname, string client, string secret)
+        private async Task Run(string newBucketName)
         {
-            var clientSecrets = new ClientSecrets();
+            /*var clientSecrets = new ClientSecrets();
             clientSecrets.ClientId = client;
             clientSecrets.ClientSecret = secret;
+            */
+            message += "Starting run... \n";
+
+            var clientSecrets = new ClientSecrets();
+            clientSecrets.ClientId = clientID;
+            clientSecrets.ClientSecret = clientSecret;
             var scopes = new[] { @"https://www.googleapis.com/auth/devstorage.full_control" };
 
             var cts = new CancellationTokenSource();
@@ -38,29 +48,68 @@ namespace Apprenda.SaaSGrid.Addons.Google_Cloud_Addon
             await userCredential.RefreshTokenAsync(cts.Token);
 
             var service = new Google.Apis.Storage.v1.StorageService();
-                
+
             var newBucket = new Google.Apis.Storage.v1.Data.Bucket()
             {
-                Name = newbucketname
+                Name = newBucketName
             };
-                
-            var newBucketQuery = service.Buckets.Insert(newBucket, projectName);
+
+            var newBucketQuery = service.Buckets.Insert(newBucket, projectID);
             newBucketQuery.OauthToken = userCredential.Token.AccessToken;
 
             try
             {
                 newBucketQuery.Execute();
-                Console.WriteLine("Added new bucket " + newbucketname + " to project " + projectName);
+                message += "Added new bucket " + newBucketName + " to project " + projectID + "\n";
+
             }
-            catch(AggregateException ex)
+            catch (AggregateException ex)
             {
                 foreach (var err in ex.InnerExceptions)
                 {
-                    Console.WriteLine("ERROR: " + err.Message); 
-                    //409 - bucket already exists
+                    message += "Error adding bucket:" + err.Message + " \n";
+       
+                }
+            }
+            message += "Finished run \n";
+        }
+        public void addBucket(string bucketName)
+        {
+            message += "Attempting to add a bucket \n";
+
+            //verify parameters passed in correctly
+            message += "Project ID: " + projectID + "\n";
+            message += "Email: " + email + "\n";
+            message += "Client ID: " + clientID + "\n";
+            message += "Client Secret: " + clientSecret + "\n";
+            try
+            {
+                var newop = new BucketOperations(projectID, email, clientID, clientSecret);
+                newop.Run(bucketName).Wait();
+                message += newop.message;
+               // new BucketOperations(projectID, email, clientID, clientSecret).Run(bucketName).Wait();
+
+                message += "Successfully added bucket \n";
+            }
+            catch (AggregateException ex)
+            {
+                message += "Failed to add bucket \n";
+                foreach (var err in ex.InnerExceptions)
+                {
+                    message += "ERROR: " + err.Message + "\n";
                 }
             }
         }
+    }
+    public class Google_Cloud_Addon : AddonBase
+    {
+        private static readonly ILogger log1 = LogManager.Instance().GetLogger(typeof(Google_Cloud_Addon));
+
+        public override OperationResult Deprovision(AddonDeprovisionRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
         public override ProvisionAddOnResult Provision(AddonProvisionRequest request)
         {
            /* var provisionResult = new ProvisionAddOnResult("") { IsSuccess = false };
@@ -75,18 +124,7 @@ namespace Apprenda.SaaSGrid.Addons.Google_Cloud_Addon
                 }
             }
 
-            try
-            {
-                new Google_Cloud_Addon().Run().Wait();
-            }
-            catch (AggregateException ex)
-            {
-                foreach (var err in ex.InnerExceptions)
-                {
-                    Console.WriteLine("ERROR: " + err.Message);
-                }
-            }
-            Console.ReadKey();*/
+    */
             throw new NotImplementedException();
         }
 
@@ -110,21 +148,21 @@ namespace Apprenda.SaaSGrid.Addons.Google_Cloud_Addon
             testProgress += "ProjectID is " + projectID + "\n";
             var bucketName = manifestprops["BucketName"];
             testProgress += "Bucket name is " + bucketName + "\n";
-
-            //test creation
             try
-            {
-                new Google_Cloud_Addon().Run(projectID, email, bucketName, accessKey, secretAccessKey).Wait();
-                testProgress += "Successfully added bucket \n";
+            {            
+                var op = new BucketOperations(projectID, email, accessKey, secretAccessKey);
+                op.addBucket(bucketName);
+                testProgress += op.message;
+                testResult.IsSuccess = true;
             }
-            catch
+            catch(Exception e)
             {
+                testProgress += "EXCEPTION: " + e + "\n";
                 testProgress += "Failed to add bucket \n";
+                testResult.IsSuccess = false;
             }
-            testResult.IsSuccess = true;
             testResult.EndUserMessage = testProgress;
             return testResult;
-            //throw new NotImplementedException();
         }
     }
 }
