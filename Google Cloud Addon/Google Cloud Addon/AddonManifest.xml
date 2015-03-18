@@ -14,8 +14,8 @@
                provisioningLocation=""
                manifestVersion="2">
   <properties>
-    <property key="projectID" displayName="project ID" description="Required - please supply the google cloud project ID" value=""/>
-    <property key="email" displayName="User email" description="Required - please supply an email address that is authorized on the Google cloud account" value=""/>
+    <property key="ProjectID" displayName="project ID" description="Required - please supply the google cloud project ID" value=""/>
+    <property key="Email" displayName="User email" description="Required - please supply an email address that is authorized on the Google cloud account" value=""/>
     <property key="GoogleClientKey" displayName="Google Client Key" description="Required - please supply the client key" value=""/>
     <property key="GoogleSecretKey" displayName="Google Secret Key" description="Required - please supply the secret key" value=""/>
     <property key="BucketName" displayName="Bucket Name" description="Default name of the bucket. Should be overridden during provisioning." value="" />
