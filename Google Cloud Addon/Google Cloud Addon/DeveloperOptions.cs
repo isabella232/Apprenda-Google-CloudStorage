@@ -6,7 +6,7 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
     internal class GoogleStorageDeveloperOptions
     {
         internal string ProjectId { get; private set; }
-        internal string BucketName { get; private set; }
+        internal string BucketName { get; set; }
 
         // parses the developer options into a usable model - these are the ones that come from the web form.
         internal static GoogleStorageDeveloperOptions Parse(IEnumerable<AddonParameter> parameters)

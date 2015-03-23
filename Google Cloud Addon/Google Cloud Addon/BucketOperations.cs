@@ -1,23 +1,6 @@
-﻿/*using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Google.Apis;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Download;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
-using Google.Apis.Util.Store;
-using System.Security.Cryptography.X509Certificates;*/
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,16 +24,10 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
         private string DefaultBucketName { get; set; }
         private string CertificateFile { get; set; }
 
-        internal BucketOperations(AddonManifest manifest, IEnumerable<AddonParameter> addonParameters)
+        internal BucketOperations(AddonManifest manifest, GoogleStorageDeveloperOptions developerOptions)
         {
             try
             {
-            // ok two things here. 
-            // 1. the manifest properties and developer options should be decoupled. there are things the developer shouldn't have access to (ie. secret keys)
-            // so what we will do here is bring in the manifest and parse the manifest properties controlled by devOps
-            // 2. the bucketName should come from the developerOptions (and maybe the projectID if not using the default).
-            var developerOptions = GoogleStorageDeveloperOptions.Parse(addonParameters);
-            // ok and then assign the information to the 
             BucketName = developerOptions.BucketName;
             // now, let's grab the properties from the manifest.
             var manifestprops = manifest.GetProperties().ToDictionary(x => x.Key, x => x.Value);
@@ -108,7 +85,6 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
         internal void AddBucket()
         {
             Message += "Attempting to add a bucket \n";
-
             try
             {
                 AddBucketTask().Wait();
