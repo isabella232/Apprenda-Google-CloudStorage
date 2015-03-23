@@ -17,7 +17,6 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
 {
     internal class BucketOperations
     {
-        internal string Message { get; private set; }
         private string ProjectId { get; set; }
         private string ServiceAccountEmail { get; set; }
         private string BucketName { get; set; }
@@ -73,30 +72,21 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 var newBucketQuery = await service.Buckets.Insert(newBucket, ProjectId).ExecuteAsync();
             }
-            catch (AggregateException ex)
+            catch (Exception e)
             {
-                foreach (var err in ex.InnerExceptions)
-                {
-                    Message += "Error adding bucket:" + err.Message + " \n";
-                }
+                throw new Exception(e.Message);
             }
     }
 
         internal void AddBucket()
         {
-            Message += "Attempting to add a bucket \n";
             try
             {
                 AddBucketTask().Wait();
-                Message += "Successfully added bucket \n";
             }
-            catch (AggregateException ex)
+            catch (Exception e)
             {
-                Message += "Failed to add bucket \n";
-                foreach (var err in ex.InnerExceptions)
-                {
-                    Message += "ERROR: " + err.Message + "\n";
-                }
+                throw new Exception(e.Message);
             }
         }
 
@@ -125,31 +115,21 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 var removeBucketQuery = await service.Buckets.Delete(newBucketName).ExecuteAsync();
             }
-            catch (AggregateException ex)
+            catch (Exception e)
             {
-                foreach (var err in ex.InnerExceptions)
-                {
-                    Message += "Error deleting bucket:" + err.Message + " \n";
-
-                }
+                throw new Exception(e.Message);
             }
         }
 
         internal void RemoveBucket()
         {
-            Message += "Attempting to remove a bucket \n";
             try
             {
                 RemoveBucketTask().Wait();
-                Message += "Successfully removed bucket \n";
             }
-            catch (AggregateException ex)
+            catch (Exception e)
             {
-                Message += "Failed to remove bucket \n";
-                foreach (var err in ex.InnerExceptions)
-                {
-                    Message += "ERROR: " + err.Message + "\n";
-                }
+                throw new Exception(e.Message);
             }
         }
     }
