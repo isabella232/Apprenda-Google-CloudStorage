@@ -15,10 +15,9 @@
                manifestVersion="2">
   <properties>
     <property key="ProjectID" displayName="project ID" description="Required - please supply the google cloud project ID" value=""/>
-    <property key="Email" displayName="User email" description="Required - please supply an email address that is authorized on the Google cloud account" value=""/>
-    <property key="GoogleClientKey" displayName="Google Client Key" description="Required - please supply the client key" value=""/>
-    <property key="GoogleSecretKey" displayName="Google Secret Key" description="Required - please supply the secret key" value=""/>
-    <property key="BucketName" displayName="Bucket Name" description="Default name of the bucket. Should be overridden during provisioning." value="" />
+    <property key="Email" displayName="Service account email" description="Required - please supply an the service account email" value=""/>    
+    <property key="CertFile" displayName="Certificate File" description="Required - please supply the path to the certificate file" value="" />
+    <property key="DefaultBucketName" displayName="Bucket Name" description="Default name of the bucket. Should be overridden during provisioning." value="" />
   </properties>
   <parameters allowUserDefinedParameters="true" />
 </addonManifest>
