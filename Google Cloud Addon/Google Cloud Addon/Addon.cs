@@ -31,10 +31,13 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
                 deprovisionResult.IsSuccess = true;
                 deprovisionResult.EndUserMessage = "Successfully deleted bucket: " + conInfo.BucketName;
             }
-            catch (Exception e)
+            catch (AggregateException err)
             {
-                deprovisionResult.EndUserMessage = e.Message;
-                deprovisionResult.IsSuccess = false;
+                foreach (var e in err.InnerExceptions)
+                {
+                    deprovisionResult.EndUserMessage = e.Message;
+                    deprovisionResult.IsSuccess = false;
+                }
             }
             return deprovisionResult;
         }
@@ -55,10 +58,13 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
                 provisionResult.ConnectionData = "BucketName=" + developerOptions.BucketName;
                 provisionResult.EndUserMessage = "Successfully added bucket " + developerOptions.BucketName + "\n";
             }
-            catch (Exception e)
+            catch (AggregateException err)
             {
-                provisionResult.EndUserMessage = e.Message;
-                provisionResult.IsSuccess = false;
+                foreach (var e in err.InnerExceptions)
+                {
+                    provisionResult.EndUserMessage = e.Message;
+                    provisionResult.IsSuccess = false;
+                }
             }
             return provisionResult;
         }
@@ -88,18 +94,24 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
                     testProgress += "Sucessfully removed a bucket.\n";
                     testResult.IsSuccess = true;
                 }
-                catch(Exception e)
+                catch (AggregateException err)
+                {
+                    foreach (var e in err.InnerExceptions)
+                    {
+                        Log.Error("Error occurred during test of Google Cloud Addon", e);
+                        testProgress += "EXCEPTION: " + e + "\n";
+                        testProgress += "Failed to remove bucket \n";
+                    }
+                }
+            }
+            catch (AggregateException err)
+            {
+                foreach (var e in err.InnerExceptions)
                 {
                     Log.Error("Error occurred during test of Google Cloud Addon", e);
                     testProgress += "EXCEPTION: " + e + "\n";
-                    testProgress += "Failed to remove bucket \n";
+                    testProgress += "Failed to add bucket \n";
                 }
-            }
-            catch(Exception e)
-            {
-                Log.Error("Error occurred during test of Google Cloud Addon", e);
-                testProgress += "EXCEPTION: " + e + "\n";
-                testProgress += "Failed to add bucket \n";
             }
             testResult.EndUserMessage = testProgress;
             return testResult;

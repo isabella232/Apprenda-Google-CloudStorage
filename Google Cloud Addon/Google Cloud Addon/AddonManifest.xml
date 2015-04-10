@@ -19,5 +19,7 @@
     <property key="CertFile" displayName="Certificate File" description="Required - please supply the path to the certificate file" value="" />
     <property key="DefaultBucketName" displayName="Bucket Name" description="Default name of the bucket. Should be overridden during provisioning." value="" />
   </properties>
-  <parameters allowUserDefinedParameters="true" />
+  <parameters allowUserDefinedParameters="true">
+    <parameter key="BucketName" displayName ="Bucket Name" isRequired="true" isEncrypted ="false" description="Name of the bucket to create" />
+  </parameters>
 </addonManifest>

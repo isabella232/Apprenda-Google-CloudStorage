@@ -72,10 +72,11 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 var newBucketQuery = await service.Buckets.Insert(newBucket, ProjectId).ExecuteAsync();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                throw new Exception(e.Message);
+                throw new AggregateException(e);
             }
+
     }
 
         internal void AddBucket()
@@ -84,10 +85,11 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 AddBucketTask().Wait();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                throw new Exception(e.Message);
+                throw new AggregateException(e);
             }
+
         }
 
         private async Task RemoveBucketTask()
@@ -115,10 +117,11 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 var removeBucketQuery = await service.Buckets.Delete(newBucketName).ExecuteAsync();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                throw new Exception(e.Message);
+                throw new AggregateException(e);
             }
+
         }
 
         internal void RemoveBucket()
@@ -127,10 +130,11 @@ namespace Apprenda.SaaSGrid.Addons.Google.Storage
             {
                 RemoveBucketTask().Wait();
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                throw new Exception(e.Message);
+                throw new AggregateException(e);
             }
+
         }
     }
 }
